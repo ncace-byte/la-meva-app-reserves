@@ -3,51 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserva Ràpida</title>
+    <title>Reserva Confirmada</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+<body class="bg-blue-50 flex items-center justify-center min-h-screen p-4">
 
-    <div class="bg-white p-6 rounded-xl shadow-lg w-80 text-center">
-        <h2 class="text-xl font-bold mb-4">Reserva l'Espai</h2>
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Finalitza la teva reserva</h1>
         
         <input type="text" id="nom" placeholder="El teu nom" 
-            class="w-full p-2 border rounded mb-4 outline-none focus:border-blue-500">
+            class="w-full p-3 border-2 border-blue-100 rounded-lg mb-4 outline-none focus:border-blue-500">
 
-        <select id="espai" class="w-full p-2 border rounded mb-6">
+        <select id="espai" class="w-full p-3 border-2 border-blue-100 rounded-lg mb-6">
             <option value="Gimnàs">🏀 Gimnàs</option>
             <option value="Biblioteca">📚 Biblioteca</option>
+            <option value="Laboratori">🧪 Laboratori</option>
         </select>
 
-        <a id="meuBoto" 
-           href="https://www.google.com/calendar/render?action=TEMPLATE&text=Reserva" 
+        <a id="btn-google" 
+           href="#" 
            target="_blank"
-           class="block w-full bg-blue-600 text-white py-3 rounded-lg font-bold">
-           CONFIRMAR ARA
+           class="block w-full bg-green-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-600 transition-transform active:scale-95 shadow-md">
+           ANAR AL CALENDARI 🗓️
         </a>
     </div>
 
     <script>
         const inputNom = document.getElementById('nom');
         const selectEspai = document.getElementById('espai');
-        const enllac = document.getElementById('meuBoto');
+        const boto = document.getElementById('btn-google');
 
-        function actualitza() {
-            const textReserva = "Reserva " + selectEspai.value;
-            const detalls = "Alumne: " + inputNom.value;
+        function generarUrl() {
+            const titol = "Reserva: " + selectEspai.value;
+            const descripcio = "Reserva feta per l'alumne: " + inputNom.value;
             
-            // Construïm la URL i la posem DIRECTAMENT al botó
-            enllac.href = "https://www.google.com/calendar/render?action=TEMPLATE&text=" 
-                          + encodeURIComponent(textReserva) 
-                          + "&details=" + encodeURIComponent(detalls);
+            // Atenció a l'ordre: action=TEMPLATE és obligatori!
+            // text = Títol de l'esdeveniment
+            // details = Descripció
+            const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(titol)}&details=${encodeURIComponent(descripcio)}&sf=true&output=xml`;
+            
+            boto.href = url;
         }
 
-        // Cada vegada que l'usuari toqui res, la URL canvia a l'instant
-        inputNom.addEventListener('input', actualitza);
-        selectEspai.addEventListener('change', actualitza);
+        // Escoltem els canvis
+        inputNom.addEventListener('input', generarUrl);
+        selectEspai.addEventListener('change', generarUrl);
         
-        // Executem un cop al principi
-        actualitza();
+        // Inicialitzem
+        generarUrl();
     </script>
 </body>
 </html>
