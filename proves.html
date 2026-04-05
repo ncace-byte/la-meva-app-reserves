@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva Espai INS</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icones via CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Colors exactes del disseny de Figma */
+        .bg-pill-green { background-color: #E8FDF0; }
+        .bg-input-beige { background-color: #F5E6D3; }
+        .bg-select-gray { background-color: #EBEBEB; }
+        
+        /* Classe per amagar elements */
+        .hidden { display: none; }
+
+        /* Centrat de text per als inputs */
+        input, select {
+            text-align: center;
+            text-align-last: center;
+        }
+        input::placeholder {
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center font-sans text-gray-800 p-4">
+
+    <div class="w-full max-w-md">
+        
+        <!-- PANTALLA DEL FORMULARI -->
+        <div id="form-section" class="flex flex-col items-center space-y-10">
+            <!-- Títol - Forma de píndola verda -->
+            <div class="bg-pill-green px-10 py-5 rounded-[50px] w-fit border border-green-100 shadow-sm">
+                <h1 class="text-3xl md:text-4xl font-normal text-black text-center">
+                    Reserva espai INS
+                </h1>
+            </div>
+
+            <form id="reservation-form" class="w-full flex flex-col items-center space-y-8">
+                <!-- Selecció d'espai - Gris -->
+                <div class="w-full max-w-[280px]">
+                    <select id="space" name="space" required
+                        class="w-full bg-select-gray border border-gray-400 rounded-md px-4 py-2 text-lg text-gray-700 outline-none cursor-pointer appearance-none">
+                        <option value="" disabled selected>Selecciona una opció</option>
+                        <option value="Biblioteca">Biblioteca</option>
+                        <option value="Gimnàs">Gimnàs</option>
+                        <option value="Taller">Taller</option>
+                    </select>
+                </div>
+
+                <!-- Camps d'entrada - Beix i Quadrats -->
+                <div class="w-full max-w-[300px] space-y-4">
+                    <input type="text" id="studentName" name="studentName" placeholder="Nom alumne" required
+                        class="w-full bg-input-beige border-none rounded-none px-6 py-4 text-2xl placeholder-gray-600 outline-none">
+                    
+                    <!-- Input de data que canvia de tipus en fer focus -->
+                    <input type="text" id="date" name="date" placeholder="Data" required
+                        onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'"
+                        class="w-full bg-input-beige border-none rounded-none px-6 py-4 text-2xl placeholder-gray-600 outline-none">
+                    
+                    <!-- Input d'hora que canvia de tipus en fer focus -->
+                    <input type="text" id="time" name="time" placeholder="Hora" required
+                        onfocus="(this.type='time')" onblur="if(!this.value)this.type='text'"
+                        class="w-full bg-input-beige border-none rounded-none px-6 py-4 text-2xl placeholder-gray-600 outline-none">
+                </div>
+
+                <!-- Botó de confirmar - Oval verd amb vora negra -->
+                <button type="submit"
+                    class="mt-10 bg-pill-green border border-black rounded-[100px] px-10 py-6 text-2xl font-normal hover:bg-[#D8F5E0] transition-colors cursor-pointer shadow-sm active:scale-95">
+                    Confirmar reserva
+                </button>
+            </form>
+        </div>
+
+        <!-- PANTALLA DE CONFIRMACIÓ (Amagada per defecte) -->
+        <div id="success-section" class="hidden w-full bg-pill-green p-10 rounded-[40px] text-center space-y-6 border border-green-200 shadow-md">
+            <div class="flex justify-center">
+                <i data-lucide="check-circle-2" class="text-green-600 w-16 h-16"></i>
+            </div>
+            <h2 class="text-3xl font-medium text-green-900">Reserva Confirmada!</h2>
+            
+            <div class="text-left bg-white/40 p-6 rounded-2xl space-y-2 text-xl">
+                <p><strong>Espai:</strong> <span id="res-space"></span></p>
+                <p><strong>Alumne:</strong> <span id="res-name"></span></p>
+                <p><strong>Data:</strong> <span id="res-date"></span></p>
+                <p><strong>Hora:</strong> <span id="res-time"></span></p>
+            </div>
+
+            <button id="back-button"
+                class="flex items-center justify-center gap-2 w-full py-4 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-lg">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                Tornar enrere
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Inicialització de les icones
+        lucide.createIcons();
+
+        // Referències als elements de la pàgina
+        const form = document.getElementById('reservation-form');
+        const formSection = document.getElementById('form-section');
+        const successSection = document.getElementById('success-section');
+        const backButton = document.getElementById('back-button');
+
+        const resSpace = document.getElementById('res-space');
+        const resName = document.getElementById('res-name');
+        const resDate = document.getElementById('res-date');
+        const resTime = document.getElementById('res-time');
+
+        // Lògica d'enviament del formulari
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Guardar les dades per mostrar-les al resum
+            resSpace.textContent = document.getElementById('space').value;
+            resName.textContent = document.getElementById('studentName').value;
+            resDate.textContent = document.getElementById('date').value;
+            resTime.textContent = document.getElementById('time').value;
+
+            // Amagar formulari i mostrar èxit
+            formSection.classList.add('hidden');
+            successSection.classList.remove('hidden');
+        });
+
+        // Lògica per tornar al formulari
+        backButton.addEventListener('click', function() {
+            form.reset();
+            // Reset dels tipus d'input per mostrar el placeholder de nou
+            document.getElementById('date').type = 'text';
+            document.getElementById('time').type = 'text';
+            
+            successSection.classList.add('hidden');
+            formSection.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
